@@ -1,46 +1,37 @@
 <template>
     <div class="hot-news">
-        <ul>
+        <ul v-for="item in list">
             <!-- 左右布局 -->
-            <li class="item1">
+            <li class="item1" v-if="item.img.length == 1">
                 <div class="left-txt">
-                    <span>美国唯一的空降部队-陆军第82空降师</span>
+                    <span>{{item.title}}</span>
                     <div class="bottom-part">
                         <div>
                             <img src="../assets/hot/hot.png">
-                            <span>人民日报海外站<i>100评</i></span>
+                            <span>{{item.fromPlat}}<i>{{item.commentNum}}评</i></span>
                         </div>
-                        <span></span>
                     </div>
                 </div>
                 <div class="right-img">
-                    <img class="imgW" src="https://p3.pstatp.com/list/pgc-image/38cb52aab2b749ab9f9c354480f8c531">
-                </div>
-            </li>
-            <li class="item1">
-                <div class="left-txt">
-                    <span>美国唯一的空降部队-陆军第82空降师</span>
-                    <div class="bottom-part">
-                        <div>
-                            <img src="../assets/hot/hot.png">
-                            <span>人民日报海外站<i>100评</i></span>
-                        </div>
-                        <span></span>
-                    </div>
-                </div>
-                <div class="right-img">
-                    <img class="imgW" src="https://p3.pstatp.com/list/pgc-image/38cb52aab2b749ab9f9c354480f8c531">
+                    <img class="imgW" :src="item.img[0]">
                 </div>
             </li>
             <!-- 上下布局 -->
-            <li class="item2">
+            <li class="item2" v-else>
                 <div class="top-txt">
-                    谁说女子不如男！中国第一女司机，24岁轻松开动6万吨航母
+                    {{item.title}}
                 </div>
                 <div class="img-three">
-                    <img class="imgW" src="https://p3.pstatp.com/list/pgc-image/fb6c1e8a57074998a6fcd09dc43e9237">
-                    <img class="imgW" src="https://p3.pstatp.com/list/pgc-image/fb6c1e8a57074998a6fcd09dc43e9237">
-                    <img class="imgW" src="https://p3.pstatp.com/list/pgc-image/fb6c1e8a57074998a6fcd09dc43e9237">
+                    <img :src="item.img[0]">
+                    <img :src="item.img[1]">
+                    <img :src="item.img[2]">
+                </div>
+                <div class="bottom-part">
+                    <div>
+                        <img src="../assets/hot/hot.png">
+                        <span>{{item.fromPlat}}<i>{{item.commentNum}}评</i></span>
+                    </div>
+                    <span></span>
                 </div>
             </li>
         </ul>
@@ -49,8 +40,27 @@
 
 <script>
 export default {
-
-}
+        data(){
+            return{
+                msg:'',
+                list:[]      // 拿到列表里面的值
+            }
+        },
+        created(){
+            this.getData();
+        },
+        methods:{
+            getData(){
+                var api = 'https://easy-mock.com/mock/5c9a254c348ab3569aac9ff4/toutiao/hot';
+                this.$axios.get(api).then((res)=>{
+                    console.log(res);
+                    this.list = res.data.data.list;
+                }).catch((error)=>{
+                    console.log(error);
+                })
+            }
+        }
+    }
 </script>
 
 <style scoped>
@@ -60,22 +70,23 @@ export default {
     list-style: none;
 }
 .hot-news{
-    padding:0 15px;
+    padding:0 10px;
 }
 .item1{
     display:flex;
-    margin-bottom:10px;
+    padding-bottom:5px;
+    margin-bottom:20px;
+    border-bottom:1px solid rgba(221, 221, 221, 0.6);
 }
 .item1 .left-txt{
     flex:8;
 }
 .item1 .right-img{
-    flex:4;
+    flex:3;
     text-align: right;
 }
 img.imgW{
-    width:100px;
-    height: 65px;
+    width:100%;
 }
 .bottom-part img{
     width:16px;
@@ -88,11 +99,24 @@ img.imgW{
     font-style: normal;
     margin-left: 5px;
 }
+.item2{
+    border-bottom:1px solid rgba(221, 221, 221, 0.6);
+    padding-bottom:5px;
+    margin-bottom:20px;
+}
 .item2 .top-txt{
     line-height: 30px;
 }
 .img-three{
-    text-align: center;
+    font-size:0;
+    margin-bottom:5px;
+}
+.img-three img{
+    width:32%;
+    margin-right:1%;
+}
+.img-three img:nth-child(3){
+    margin-right:0;
 }
 
 </style>
